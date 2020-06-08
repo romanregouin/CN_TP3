@@ -4,15 +4,18 @@
 typedef struct n {
   int code[2];
   int poids;
-  int debut;
-  struct n* suivant;
+  int etat;
+  struct n* precedent;
+  struct n *suivant1, *suivant2;
+  int final;
 } noeud, *p_noeud;
 
-noeud* nouveauNoeud(int* code, int indice, int etat, int poids, int input,
-                    int* etatSuivant, int debut) {
+noeud* nouveauNoeud(noeud* precedent, int* code, int indice, int etat,
+                    int poids, int input, int* etatSuivant) {
   noeud* new = malloc(sizeof(struct n));
   new->poids = poids;
-  new->debut = debut;
+  new->final = 0;
+  new->precedent = precedent;
   switch (etat) {
     case 0:
       if (!input) {
@@ -21,12 +24,14 @@ noeud* nouveauNoeud(int* code, int indice, int etat, int poids, int input,
         new->code[0] = 0;
         new->code[1] = 0;
         *etatSuivant = 0;
+        new->etat = 0;
       } else {
         if (code[indice] == 0) new->poids++;
         if (code[indice + 1] == 0) new->poids++;
         new->code[0] = 1;
         new->code[1] = 1;
         *etatSuivant = 1;
+        new->etat = 1;
       }
       break;
     case 1:
@@ -36,12 +41,14 @@ noeud* nouveauNoeud(int* code, int indice, int etat, int poids, int input,
         new->code[0] = 1;
         new->code[1] = 0;
         *etatSuivant = 2;
+        new->etat = 2;
       } else {
         if (code[indice] == 1) new->poids++;
         if (code[indice + 1] == 0) new->poids++;
         new->code[0] = 0;
         new->code[1] = 1;
         *etatSuivant = 3;
+        new->etat = 3;
       }
       break;
     case 2:
@@ -51,12 +58,14 @@ noeud* nouveauNoeud(int* code, int indice, int etat, int poids, int input,
         new->code[0] = 1;
         new->code[1] = 1;
         *etatSuivant = 0;
+        new->etat = 0;
       } else {
         if (code[indice] == 1) new->poids++;
         if (code[indice + 1] == 1) new->poids++;
         new->code[0] = 0;
         new->code[1] = 0;
         *etatSuivant = 1;
+        new->etat = 1;
       }
       break;
     case 3:
@@ -66,21 +75,29 @@ noeud* nouveauNoeud(int* code, int indice, int etat, int poids, int input,
         new->code[0] = 0;
         new->code[1] = 1;
         *etatSuivant = 2;
+        new->etat = 2;
       } else {
         if (code[indice] == 0) new->poids++;
         if (code[indice + 1] == 1) new->poids++;
         new->code[0] = 1;
         new->code[1] = 0;
         *etatSuivant = 3;
+        new->etat = 3;
       }
       break;
   }
-  new->suivant = NULL;
+  new->suivant1 = NULL;
   return new;
 }
 
-void decoder(noeud* n, int etat, int* m, int taille) {
-  for (int j = 1; j < taille; j++) {
+void decoder(noeud* n, int* m, int taille) {
+  int etat;
+  for (int j = 0; j < taille; j++) {
+    if (n->suivant1->final)
+      n = n->suivant1;
+    else
+      n = n->suivant2;
+    etat = n->precedent->etat;
     switch (etat) {
       case 0:
         if (n->code[0] == 1) {
@@ -126,94 +143,65 @@ void decoder(noeud* n, int etat, int* m, int taille) {
 }
 
 int* decodeur(int* code, int taille) {
-  noeud *debut[2], *debut2[4];
+  noeud* tete;
+  tete = malloc(sizeof(struct n));
+  tete->precedent = NULL;
+  tete->precedent = NULL;
   noeud* actuel[4];
-  noeud* new = malloc(sizeof(struct n));
-  new->code[0] = 0;
-  new->code[1] = 0;
-  debut[0] = new;
-  new = malloc(sizeof(struct n));
-  new->code[0] = 1;
-  new->code[1] = 1;
-  debut[1] = new;
-  if (code[0] == 1)
-    debut[0]->poids++;
-  else
-    debut[1]->poids++;
-  if (code[1] == 1)
-    debut[0]->poids++;
-  else
-    debut[1]->poids++;
-  new = malloc(sizeof(struct n));
-  new->code[0] = 0;
-  new->code[1] = 0;
-  new->poids += debut[0]->poids;
-  new->debut = 0;
-  actuel[0] = new;
-  new = malloc(sizeof(struct n));
-  new->code[0] = 1;
-  new->code[1] = 1;
-  new->poids += debut[0]->poids;
-  new->debut = 1;
-  actuel[1] = new;
-  new = malloc(sizeof(struct n));
-  new->code[0] = 1;
-  new->code[1] = 0;
-  new->poids += debut[1]->poids;
-  new->debut = 2;
-  actuel[2] = new;
-  new = malloc(sizeof(struct n));
-  new->code[0] = 0;
-  new->code[1] = 1;
-  new->poids += debut[1]->poids;
-  new->debut = 3;
-  actuel[3] = new;
-  if (code[2] == 1) {
-    actuel[0]->poids++;
-    actuel[3]->poids++;
-  } else {
-    actuel[1]->poids++;
-    actuel[2]->poids++;
-  }
-  if (code[3] == 1) {
-    actuel[0]->poids++;
-    actuel[2]->poids++;
-  } else {
-    actuel[1]->poids++;
-    actuel[3]->poids++;
-  }
-  debut2[0] = actuel[0];
-  debut2[1] = actuel[1];
-  debut2[2] = actuel[2];
-  debut2[3] = actuel[3];
+  int useless;
+  tete->suivant1 = nouveauNoeud(tete, code, 0, 0, 0, 0, &useless);
+  tete->suivant2 = nouveauNoeud(tete, code, 0, 0, 0, 1, &useless);
+  tete->suivant1->suivant1 =
+      nouveauNoeud(tete->suivant1, code, 2, tete->suivant1->etat,
+                   tete->suivant1->poids, 0, &useless);
+  tete->suivant1->suivant2 =
+      nouveauNoeud(tete->suivant1, code, 2, tete->suivant1->etat,
+                   tete->suivant1->poids, 1, &useless);
+  tete->suivant2->suivant1 =
+      nouveauNoeud(tete->suivant2, code, 2, tete->suivant2->etat,
+                   tete->suivant2->poids, 0, &useless);
+  tete->suivant2->suivant2 =
+      nouveauNoeud(tete->suivant2, code, 2, tete->suivant2->etat,
+                   tete->suivant2->poids, 1, &useless);
+
+  actuel[0] = tete->suivant1->suivant1;
+  actuel[1] = tete->suivant1->suivant2;
+  actuel[2] = tete->suivant2->suivant1;
+  actuel[3] = tete->suivant2->suivant2;
+  noeud* tmp2[4];
   for (int j = 2; j < (taille / 2); j++) {
     noeud* tmp;
     int indice = 0;
+
     for (int k = 0; k < 4; k++) {
-      tmp = nouveauNoeud(code, j * 2, k, actuel[k]->poids, 0, &indice,
-                         actuel[indice]->debut);
-      if (actuel[indice]->suivant == NULL ||
-          actuel[indice]->suivant->poids > tmp->poids)
-        actuel[indice]->suivant = tmp;
-      tmp = nouveauNoeud(code, j * 2, k, actuel[k]->poids, 1, &indice,
-                         actuel[indice]->debut);
-      if (actuel[indice]->suivant == NULL ||
-          actuel[indice]->suivant->poids > tmp->poids)
-        actuel[indice]->suivant = tmp;
+      tmp2[k] = NULL;
+      actuel[k]->suivant1 =
+          nouveauNoeud(actuel[k], code, j * 2, actuel[k]->etat,
+                       actuel[k]->poids, 0, &indice);
+      actuel[k]->suivant2 = tmp =
+          nouveauNoeud(actuel[k], code, j * 2, actuel[k]->etat,
+                       actuel[k]->poids, 1, &indice);
     }
-    for (int l = 0; l < 4; l++) actuel[l] = actuel[l]->suivant;
+    for (int l = 0; l < 4; l++) {
+      if (tmp2[actuel[l]->suivant1->etat] == NULL ||
+          tmp2[l]->poids > actuel[l]->suivant1->poids)
+        tmp2[actuel[l]->suivant1->etat] = actuel[l]->suivant1;
+      if (tmp2[actuel[l]->suivant2->etat] == NULL ||
+          tmp2[l]->poids > actuel[l]->suivant2->poids)
+        tmp2[actuel[l]->suivant2->etat] = actuel[l]->suivant2;
+    }
+    for (int p = 0; p < 4; p++) actuel[p] = tmp2[p];
   }
   noeud* min = actuel[0];
   for (int p = 1; p < 4; p++) {
     if (min->poids > actuel[p]->poids) min = actuel[p];
   }
+  while (min->precedent != NULL) {
+    min->final = 1;
+    min = min->precedent;
+  }
   int* message = malloc(sizeof(int) * taille / 2);
-  if (min->debut == 0 || min->debut == 1)
-    message[0] = 0;
-  else
-    message[0] = 1;
-
-  decoder(debut2[min->debut], min->debut, message, taille / 2);
+  decoder(tete, message, taille / 2);
 
   return message;
 }
