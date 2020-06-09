@@ -228,15 +228,33 @@ void printWord(double* word, int len){
     printf("\n");
 }
 
+//suppose que le descripteur est deja ouvert
+void ecrireWord(double* word, int len, FILE* f){
+    fprintf(f,"%d\n",len);
+    for(int i=0;i<len;i++){
+        fprintf(f,"%f",word[i]);
+    }
+    fprintf(f,"\n");
+}
+
+//stocke les mots dans un fichier result.txt si il nexiste pas le cree
 int main(int argc, char const* argv[]) {
     if(argc!=1){
         printf("Syntaxe : ./%s",argv[0]);
+    }
+    FILE* resultFile = fopen("result.txt","w");
+    if(resultFile==NULL){
+        printf("Erreur overture fichier\n");
+        return EXIT_FAILURE;
     }
     srand((unsigned) time(NULL));
     double* word1 = getWord(0.0,1.0,4); 
     double* word2 = getWord(0.0,1.0,6);
     printWord(word1,4);
     printWord(word2,6);
+    ecrireWord(word1,4,resultFile);
+    ecrireWord(word2,6,resultFile);
+    fclose(resultFile);
     return 0;
 }
 
