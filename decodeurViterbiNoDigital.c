@@ -221,9 +221,14 @@ int* decodeur(int* code, int taille) {
   return message;
 }
 
-void printWord(double* word, int len){
+//bin = 1 si le mot est en binaire
+void printWord(double* word, int* wordBin, int len, int bin){
     for(int i=0;i<len;i++){
-        printf("%f ",word[i]);
+        if(bin){
+            printf("%d ",wordBin[i]);
+        }else{
+            printf("%f ",word[i]);
+        }
     }
     printf("\n");
 }
@@ -235,6 +240,30 @@ void ecrireWord(double* word, int len, FILE* f){
         fprintf(f,"%f ",word[i]);
     }
     fprintf(f,"\n");
+}
+
+//code : reel <= 0.5 -> 0 / > 0.5 -> 1 , introduit une erreur si reel = 0.5 [+-0.1]
+int* toBinariesWithErrors(double* word, int len){
+    int* result = malloc(len*sizeof(int));
+    for(int i=0;i<len;i++){
+        double tmp = word[i];
+        if(tmp<=0.5){
+            //introduction d'erreur
+            if(tmp+0.1>=0.5){
+                result[i] = 1;
+            }else{
+                result[i] = 0;
+            }
+        }else{
+            //introduction d'erreur
+            if(tmp-0.1<=0.5){
+                result[i] = 0;
+            }else{
+                result[i] = 1;
+            }
+        }
+    }
+    return result;    
 }
 
 //stocke les mots dans un fichier result.txt si il nexiste pas le cree
@@ -253,11 +282,15 @@ int main(int argc, char const* argv[]) {
     srand((unsigned) time(NULL));
     double* word1 = getWord(0.0,1.0,len1); 
     double* word2 = getWord(0.0,1.0,len2);
-    printWord(word1,len1);
-    printWord(word2,len2);
+    printWord(word1,NULL,len1,0);
+    printWord(word2,NULL,len2,0);
     ecrireWord(word1,len1,resultFile);
     ecrireWord(word2,len2,resultFile);
     fclose(resultFile);
+    int* word1Binaries = toBinariesWithErrors(word1,len1);
+    int* word2Binaries = toBinariesWithErrors(word2,len2);
+    printWord(NULL,word1Binaries,len1,1);
+    printWord(NULL,word2Binaries,len2,1);
     return 0;
 }
 
