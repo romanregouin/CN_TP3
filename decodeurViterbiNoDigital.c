@@ -14,7 +14,7 @@ typedef struct n {
 } noeud, *p_noeud;
 
 noeud* nouveauNoeud(noeud* precedent, float* code, int indice, int etat,
-                    int poids, int input, int* etatSuivant) {
+                    float poids, int input, int* etatSuivant) {
   noeud* new = malloc(sizeof(struct n));
   new->poids = poids;
   new->final = 0;
@@ -295,6 +295,28 @@ int main(int argc, char const* argv[]) {
   ;
 
   int* message;
+  message = decodeur(code, i);
+  for (int j = 0; j < i / 2; j++) {
+    printf("%d", message[j]);
+  }
+  printf("\n");
+  free(message);
+
+  i = 12;
+
+  code[0] = 0.70;
+  code[1] = 0.14;
+  code[2] = 0.77;
+  code[3] = 0.76;
+  code[4] = 0.58;
+  code[5] = 0.64;
+  code[6] = 0.19;
+  code[7] = 0.37;
+  code[8] = 0.99;
+  code[9] = 0.15;
+  code[10] = 0.66;
+  code[11] = 0.11;
+
   message = decodeur(code, i);
   for (int j = 0; j < i / 2; j++) {
     printf("%d", message[j]);
