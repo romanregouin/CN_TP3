@@ -174,12 +174,7 @@ void decoder(noeud *n, int *m, int taille) {
         printf("Erreur, ne devrait jamais passer ici\n");
         exit(3);
     }
-    break;
-    default:
-      printf("Erreur, ne devrait jamais passer ici\n");
-      exit(3);
   }
-}
 }
 
 int *decodeur(float *code, int taille) {
@@ -252,53 +247,34 @@ int main(int argc, char const *argv[]) {
     exit(2);
   }
   FILE *f = fopen(argv[1], "r");
-  int n;
-  fscanf(f, "%d", &n);
-  float *message1_f[n];
-  for (int i = 0; i < n; i++) fscanf(f, "%f", message1_f[i]);
-  fscanf(f, "%d", &n);
-  float *message2_f[n];
-  for (int i = 0; i < n; i++) fscanf(f, "%f", message1_f[i]);
+  int n1, n2;
+  fscanf(f, "%d", &n1);
+  float code1[n1];
+  for (int i = 0; i < n1; i++) fscanf(f, "%f", &code1[i]);
+  fscanf(f, "%d", &n2);
+  float code2[n2];
+  for (int i = 0; i < n2; i++) fscanf(f, "%f", &code2[i]);
   fclose(f);
-  printf("Valeur aléatoire\n\n");
-  srand((unsigned)time(NULL));
-  int i = 16;
-  float code[i];
-  for (int j = 0; j < i; j++) code[j] = randomizer(0.0, 1.0);
-  ;
-
   int *message;
-  message = decodeur(code, i);
-  for (int j = 0; j < i / 2; j++) {
+  for (int j = 0; j < n1; j++) {
+    printf("%f ", code1[j]);
+  }
+  message = decodeur(code1, n1);
+  for (int j = 0; j < n1 / 2; j++) {
     printf("%d", message[j]);
   }
   printf("\n\n");
   free(message);
 
-  printf(
-      "Test valeur fixé (avec erreur):\n\nCode : 0.70 0.14 0.77 0.76 0.58 0.64 "
-      "0.19 0.37 "
-      "0.99 0.15 0.66 0.11\nMessage :");
-  i = 12;
-
-  code[0] = 0.70;
-  code[1] = 0.14;
-  code[2] = 0.77;
-  code[3] = 0.76;
-  code[4] = 0.58;
-  code[5] = 0.64;
-  code[6] = 0.19;
-  code[7] = 0.37;
-  code[8] = 0.99;
-  code[9] = 0.15;
-  code[10] = 0.66;
-  code[11] = 0.11;
-
-  message = decodeur(code, i);
-  for (int j = 0; j < i / 2; j++) {
+  for (int j = 0; j < n2; j++) {
+    printf("%f ", code2[j]);
+  }
+  message = decodeur(code2, n2);
+  for (int j = 0; j < n2 / 2; j++) {
     printf("%d", message[j]);
   }
   printf("\n\n");
   free(message);
+
   return 0;
 }
