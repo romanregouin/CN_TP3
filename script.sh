@@ -8,8 +8,8 @@ make
 echo "----------Generator----------"
 ./generator $1 $2
 echo "----------Hamming----------"
-./decodeurViterbi result.txt
+./decodeurViterbi resultBinaries.txt
 echo "----------Euclidien----------"
-./decodeurViterbiNoDigital resultBinaries.txt
+./decodeurViterbiNoDigital result.txt
 echo "----------End----------"
 exit
