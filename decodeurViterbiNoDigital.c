@@ -96,10 +96,13 @@ double randomizer(double a, double b){
     return ( rand()/(double)RAND_MAX ) * (b-a) + a;
 }
 
-double* getWord(double a, double b, double start_time, int len){
-    srand((unsigned) time(NULL)+(unsigned) start_time);
-    double test = (rand()/(double)RAND_MAX ) * (b-a) + a;
-    return NULL;
+//suppose que la graine a ete initialise
+double* getWord(double a, double b, int len){
+    double* word = malloc(len*sizeof(double));
+    for(int i=0;i<len;i++){
+        word[i] = (rand()/(double)RAND_MAX ) * (b-a) + a;    
+    }
+    return word;
 }
 
 void decoder(noeud* n, int* m, int taille) {
@@ -218,9 +221,22 @@ int* decodeur(int* code, int taille) {
   return message;
 }
 
+void printWord(double* word, int len){
+    for(int i=0;i<len;i++){
+        printf("%f ",word[i]);
+    }
+    printf("\n");
+}
+
 int main(int argc, char const* argv[]) {
-    clock_t start = clock();
-    printf("%f\n",randomizerV2(0.0,1.0,(double)start));
+    if(argc!=1){
+        printf("Syntaxe : ./%s",argv[0]);
+    }
+    srand((unsigned) time(NULL));
+    double* word1 = getWord(0.0,1.0,4); 
+    double* word2 = getWord(0.0,1.0,6);
+    printWord(word1,4);
+    printWord(word2,6);
     return 0;
 }
 
