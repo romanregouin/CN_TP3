@@ -211,22 +211,34 @@ int main(int argc, char const* argv[]) {
     printf("./codeurViterbi <message>\n");
     exit(2);
   }
-  int i = 0;
-  for (; argv[1][i] != '\0'; i++)
-    ;
-  int code[i];
-  for (int j = 0; j < i; j++) {
-    if (argv[1][j] == '1')
-      code[j] = 1;
-    else
-      code[j] = 0;
-  }
+  FILE* f = fopen(argv[1], "r");
+  int n1, n2;
+  fscanf(f, "%d", &n1);
+  int code1[n1];
+  for (int i = 0; i < n1; i++) fscanf(f, "%d", &code1[i]);
+  fscanf(f, "%d", &n2);
+  int code2[n2];
+  for (int i = 0; i < n2; i++) fscanf(f, "%d", &code2[i]);
+  fclose(f);
   int* message;
-  message = decodeur(code, i);
-  for (int j = 0; j < i / 2; j++) {
+  for (int j = 0; j < n1; j++) {
+    printf("%d ", code1[j]);
+  }
+  message = decodeur(code1, n1);
+  for (int j = 0; j < n1 / 2; j++) {
     printf("%d", message[j]);
   }
-  printf("\n");
+  printf("\n\n");
+  free(message);
+
+  for (int j = 0; j < n2; j++) {
+    printf("%d ", code2[j]);
+  }
+  message = decodeur(code2, n2);
+  for (int j = 0; j < n2 / 2; j++) {
+    printf("%d", message[j]);
+  }
+  printf("\n\n");
   free(message);
   return 0;
 }
