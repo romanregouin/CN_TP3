@@ -38,12 +38,20 @@ void printWord(double *word, int *wordBin, int len, int bin)
 }
 
 // suppose que le descripteur est deja ouvert
-void ecrireWord(double *word, int len, FILE *f)
+//bin = 1 si le mot est en binaire
+void ecrireWord(double *word, int* wordBin, int len, FILE *f, int bin)
 {
     fprintf(f, "%d\n", len);
     for (int i = 0; i < len; i++)
     {
-        fprintf(f, "%f ", word[i]);
+        if (bin)
+        {
+            fprintf(f,"%d ", wordBin[i]);
+        }
+        else
+        {
+            fprintf(f,"%f ", word[i]);
+        }
     }
     fprintf(f, "\n");
 }

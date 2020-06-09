@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include "generator.h"
 
-//stocke les mots dans un fichier result.txt si il nexiste pas le cree
+//stocke les mots codes dans un fichier result.txt si il nexiste pas le cree
+//stocke les mots codes en binaires dans un fichier resultBinaries.txt si il nexiste pas le cree
 int main(int argc, char const *argv[])
 {
     if (argc != 3)
@@ -23,12 +24,21 @@ int main(int argc, char const *argv[])
     double *word2 = getWord(0.0, 1.0, len2);
     printWord(word1, NULL, len1, 0);
     printWord(word2, NULL, len2, 0);
-    ecrireWord(word1, len1, resultFile);
-    ecrireWord(word2, len2, resultFile);
+    ecrireWord(word1, NULL, len1, resultFile, 0);
+    ecrireWord(word2, NULL, len2, resultFile, 0);
     fclose(resultFile);
+    FILE *resultBinariesFile = fopen("resultBinaries.txt", "w");
+    if (resultBinariesFile == NULL)
+    {
+        printf("Erreur overture fichier\n");
+        return EXIT_FAILURE;
+    }
     int *word1Binaries = toBinariesWithErrors(word1, len1);
     int *word2Binaries = toBinariesWithErrors(word2, len2);
     printWord(NULL, word1Binaries, len1, 1);
     printWord(NULL, word2Binaries, len2, 1);
+    ecrireWord(NULL, word1Binaries, len1, resultFile, 1);
+    ecrireWord(NULL, word2Binaries, len2, resultFile, 1);
+    fclose(resultBinariesFile);
     return 0;
 }
