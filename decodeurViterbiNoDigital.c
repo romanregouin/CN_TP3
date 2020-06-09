@@ -310,6 +310,8 @@ int main(int argc, char const* argv[]) {
     else
       code[j] = 0;
   }*/
+
+  printf("Valeur aléatoire\n\n");
   srand((unsigned)time(NULL));
   int i = 16;
   float code[i];
@@ -321,9 +323,13 @@ int main(int argc, char const* argv[]) {
   for (int j = 0; j < i / 2; j++) {
     printf("%d", message[j]);
   }
-  printf("\n");
+  printf("\n\n");
   free(message);
 
+  printf(
+      "Test valeur fixé (avec erreur):\n\nCode : 0.70 0.14 0.77 0.76 0.58 0.64 "
+      "0.19 0.37 "
+      "0.99 0.15 0.66 0.11\nMessage :");
   i = 12;
 
   code[0] = 0.70;
@@ -343,7 +349,7 @@ int main(int argc, char const* argv[]) {
   for (int j = 0; j < i / 2; j++) {
     printf("%d", message[j]);
   }
-  printf("\n");
+  printf("\n\n");
   free(message);
   return 0;
 }
