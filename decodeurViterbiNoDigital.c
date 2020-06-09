@@ -2,16 +2,18 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "math.h"
+
 typedef struct n {
   int code[2];
-  int poids;
+  float poids;
   int etat;
   struct n* precedent;
   struct n *suivant1, *suivant2;
   int final;
 } noeud, *p_noeud;
 
-noeud* nouveauNoeud(noeud* precedent, int* code, int indice, int etat,
+noeud* nouveauNoeud(noeud* precedent, float* code, int indice, int etat,
                     int poids, int input, int* etatSuivant) {
   noeud* new = malloc(sizeof(struct n));
   new->poids = poids;
@@ -20,68 +22,100 @@ noeud* nouveauNoeud(noeud* precedent, int* code, int indice, int etat,
   switch (etat) {
     case 0:
       if (!input) {
-        if (code[indice] == 1) new->poids++;
-        if (code[indice + 1] == 1) new->poids++;
         new->code[0] = 0;
         new->code[1] = 0;
+        new->poids = new->poids * new->poids;
+        new->poids +=
+            (code[indice] - new->code[0]) * (code[indice] - new->code[0]);
+        new->poids += (code[indice + 1] - new->code[1]) *
+                      (code[indice + 1] - new->code[1]);
+        new->poids = sqrt(new->poids);
         *etatSuivant = 0;
         new->etat = 0;
       } else {
-        if (code[indice] == 0) new->poids++;
-        if (code[indice + 1] == 0) new->poids++;
         new->code[0] = 1;
         new->code[1] = 1;
+        new->poids = new->poids * new->poids;
+        new->poids +=
+            (code[indice] - new->code[0]) * (code[indice] - new->code[0]);
+        new->poids += (code[indice + 1] - new->code[1]) *
+                      (code[indice + 1] - new->code[1]);
+        new->poids = sqrt(new->poids);
         *etatSuivant = 1;
         new->etat = 1;
       }
       break;
     case 1:
       if (!input) {
-        if (code[indice] == 0) new->poids++;
-        if (code[indice + 1] == 1) new->poids++;
         new->code[0] = 1;
         new->code[1] = 0;
+        new->poids = new->poids * new->poids;
+        new->poids +=
+            (code[indice] - new->code[0]) * (code[indice] - new->code[0]);
+        new->poids += (code[indice + 1] - new->code[1]) *
+                      (code[indice + 1] - new->code[1]);
+        new->poids = sqrt(new->poids);
         *etatSuivant = 2;
         new->etat = 2;
       } else {
-        if (code[indice] == 1) new->poids++;
-        if (code[indice + 1] == 0) new->poids++;
         new->code[0] = 0;
         new->code[1] = 1;
+        new->poids = new->poids * new->poids;
+        new->poids +=
+            (code[indice] - new->code[0]) * (code[indice] - new->code[0]);
+        new->poids += (code[indice + 1] - new->code[1]) *
+                      (code[indice + 1] - new->code[1]);
+        new->poids = sqrt(new->poids);
         *etatSuivant = 3;
         new->etat = 3;
       }
       break;
     case 2:
       if (!input) {
-        if (code[indice] == 0) new->poids++;
-        if (code[indice + 1] == 0) new->poids++;
         new->code[0] = 1;
         new->code[1] = 1;
+        new->poids = new->poids * new->poids;
+        new->poids +=
+            (code[indice] - new->code[0]) * (code[indice] - new->code[0]);
+        new->poids += (code[indice + 1] - new->code[1]) *
+                      (code[indice + 1] - new->code[1]);
+        new->poids = sqrt(new->poids);
         *etatSuivant = 0;
         new->etat = 0;
       } else {
-        if (code[indice] == 1) new->poids++;
-        if (code[indice + 1] == 1) new->poids++;
         new->code[0] = 0;
         new->code[1] = 0;
+        new->poids = new->poids * new->poids;
+        new->poids +=
+            (code[indice] - new->code[0]) * (code[indice] - new->code[0]);
+        new->poids += (code[indice + 1] - new->code[1]) *
+                      (code[indice + 1] - new->code[1]);
+        new->poids = sqrt(new->poids);
         *etatSuivant = 1;
         new->etat = 1;
       }
       break;
     case 3:
       if (!input) {
-        if (code[indice] == 1) new->poids++;
-        if (code[indice + 1] == 0) new->poids++;
         new->code[0] = 0;
         new->code[1] = 1;
+        new->poids = new->poids * new->poids;
+        new->poids +=
+            (code[indice] - new->code[0]) * (code[indice] - new->code[0]);
+        new->poids += (code[indice + 1] - new->code[1]) *
+                      (code[indice + 1] - new->code[1]);
+        new->poids = sqrt(new->poids);
         *etatSuivant = 2;
         new->etat = 2;
       } else {
-        if (code[indice] == 0) new->poids++;
-        if (code[indice + 1] == 1) new->poids++;
         new->code[0] = 1;
         new->code[1] = 0;
+        new->poids = new->poids * new->poids;
+        new->poids +=
+            (code[indice] - new->code[0]) * (code[indice] - new->code[0]);
+        new->poids += (code[indice + 1] - new->code[1]) *
+                      (code[indice + 1] - new->code[1]);
+        new->poids = sqrt(new->poids);
         *etatSuivant = 3;
         new->etat = 3;
       }
@@ -91,17 +125,18 @@ noeud* nouveauNoeud(noeud* precedent, int* code, int indice, int etat,
   return new;
 }
 
-double randomizer(double a, double b){
-    srand((unsigned) time(NULL));
-    return ( rand()/(double)RAND_MAX ) * (b-a) + a;
+double randomizer(double a, double b) {
+  srand((unsigned)time(NULL));
+  return (rand() / (double)RAND_MAX) * (b - a) + a;
 }
 
-double* getWord(double a, double b, double start_time, int len){
-    srand((unsigned) time(NULL)+(unsigned) start_time);
-    double test = (rand()/(double)RAND_MAX ) * (b-a) + a;
-    return NULL;
+/*
+double* getWord(double a, double b, double start_time, int len) {
+  srand((unsigned)time(NULL) + (unsigned)start_time);
+  double test = (rand() / (double)RAND_MAX) * (b - a) + a;
+  return NULL;
 }
-
+*/
 void decoder(noeud* n, int* m, int taille) {
   int etat;
   for (int j = 0; j < taille; j++) {
@@ -154,7 +189,7 @@ void decoder(noeud* n, int* m, int taille) {
   }
 }
 
-int* decodeur(int* code, int taille) {
+int* decodeur(float* code, int taille) {
   noeud* tete;
   tete = malloc(sizeof(struct n));
   tete->precedent = NULL;
@@ -217,15 +252,16 @@ int* decodeur(int* code, int taille) {
 
   return message;
 }
-
-int main(int argc, char const* argv[]) {
-    clock_t start = clock();
-    printf("%f\n",randomizerV2(0.0,1.0,(double)start));
-    return 0;
-}
-
+/*
 int mainV2(int argc, char const* argv[]) {
-  if (argc != 2) {
+  clock_t start = clock();
+  printf("%f\n", randomizer(0.0, 1.0, (double)start));
+
+  return 0;
+}
+*/
+int main(int argc, char const* argv[]) {
+  /*if (argc != 2) {
     printf("./codeurViterbi <message>\n");
     exit(2);
   }
@@ -238,7 +274,12 @@ int mainV2(int argc, char const* argv[]) {
       code[j] = 1;
     else
       code[j] = 0;
-  }
+  }*/
+  int i = 16;
+  float code[i];
+  for (int j = 0; j < i; j++) code[j] = randomizer(0.0, 1.0);
+  ;
+
   int* message;
   message = decodeur(code, i);
   for (int j = 0; j < i / 2; j++) {

@@ -16,7 +16,7 @@ decodeurViterbi : decodeurViterbi.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 decodeurViterbiNoDigital : decodeurViterbiNoDigital.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 .PHONY : clean
 
