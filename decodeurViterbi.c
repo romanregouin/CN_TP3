@@ -208,7 +208,7 @@ int* decodeur(int* code, int taille) {
 
 int main(int argc, char const* argv[]) {
   if (argc != 2) {
-    printf("./codeurViterbi <message>\n");
+    printf("./decodeurViterbi <code>\n");
     exit(2);
   }
   FILE* f = fopen(argv[1], "r");
