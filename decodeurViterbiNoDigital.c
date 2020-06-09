@@ -232,7 +232,7 @@ void printWord(double* word, int len){
 void ecrireWord(double* word, int len, FILE* f){
     fprintf(f,"%d\n",len);
     for(int i=0;i<len;i++){
-        fprintf(f,"%f",word[i]);
+        fprintf(f,"%f ",word[i]);
     }
     fprintf(f,"\n");
 }
