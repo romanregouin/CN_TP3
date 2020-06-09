@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS =-g -O0 -Wall -Werror
 SRC = $(wildcard *.c)
 OBJ = $(SRC:.c=.o)
-EXE =  codeurViterbi decodeurViterbi decodeurViterbiNoDigital
+EXE =  codeurViterbi decodeurViterbi decodeurViterbiNoDigital generator
 
 all: $(EXE)
 
@@ -17,6 +17,9 @@ decodeurViterbi : decodeurViterbi.o
 
 decodeurViterbiNoDigital : decodeurViterbiNoDigital.o
 	$(CC) $(CFLAGS) -o $@ $^ -lm
+
+generator : generator.o
+	$(CC) $(CFLAGS) -o $@ $^
 
 .PHONY : clean
 
